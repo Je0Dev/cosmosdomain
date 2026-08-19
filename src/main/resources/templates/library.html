@@ -51,7 +51,7 @@
     <!-- Add Media Modal -->
     <div id="addModal" class="modal" style="display:none;">
         <div class="modal-content">
-            <span onclick="document.getElementById('addModal').style.display='none'" class="close">&times;</span>
+            <span onclick="closeAddModal()" class="close">&times;</span>
             <h2>Add Media to Library</h2>
             <form th:action="@{/library/add}" method="post" enctype="multipart/form-data">
                 <div class="form-group">
@@ -78,6 +78,31 @@
             </form>
         </div>
     </div>
+</main>
+
+<script>
+    const addMediaBtn = document.getElementById('addMediaBtn');
+    const addModal = document.getElementById('addModal');
+
+    if (addMediaBtn && addModal) {
+        addMediaBtn.addEventListener('click', function() {
+            addModal.style.display = 'flex';
+        });
+    }
+
+    function closeAddModal() {
+        const modal = document.getElementById('addModal');
+        if (modal) modal.style.display = 'none';
+    }
+
+    // Close modal when clicking outside
+    window.addEventListener('click', function(event) {
+        const modal = document.getElementById('addModal');
+        if (event.target === modal) {
+            modal.style.display = 'none';
+        }
+    });
+</script>
 </main>
 </body>
 </html>
