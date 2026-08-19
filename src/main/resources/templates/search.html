@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>CosmosDomain - Search</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<header th:insert="~{fragments/navbar :: navbar}"></header>
+<main class="main-content">
+    <h1>Search</h1>
+    <form th:action="@{/search}" method="get" class="search-form">
+        <input type="text" name="query" th:value="${query}" placeholder="Enter search terms..." style="flex: 1;">
+        <select name="type">
+            <option value="all" th:selected="${type == 'all'}">All</option>
+            <option value="movie" th:selected="${type == 'movie'}">Movies</option>
+            <option value="tv" th:selected="${type == 'tv'}">Series</option>
+            <option value="person" th:selected="${type == 'person'}">People</option>
+        </select>
+        <button type="submit" class="btn btn-primary">Search</button>
+    </form>
+
+    <div th:if="${query != null && !query.isEmpty()}">
+        <h2>Results for "<span th:text="${query}">query</span>"</h2>
+
+        <div th:if="${movies != null && !movies.empty}">
+            <h3>Movies</h3>
+            <div class="grid">
+                <div th:each="movie : ${movies}" class="movie-card">
+                    <a th:href="@{'/movie/' + ${movie.id}}">
+                        <img th:src="${imageBaseUrl + '/' + posterSize + movie.posterPath}"
+                             th:alt="${movie.title}" class="poster-img">
+                    </a>
+                    <div class="movie-info">
+                        <h3 th:text="${movie.title}">Title</h3>
+                        <p th:text="${movie.voteAverage}" class="rating">★ 8.0</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div th:if="${series != null && !series.empty}">
+            <h3>Series</h3>
+            <div class="grid">
+                <div th:each="series : ${series}" class="movie-card">
+                    <a th:href="@{'/tv/' + ${series.id}}">
+                        <img th:src="${imageBaseUrl + '/' + posterSize + series.posterPath}"
+                             th:alt="${series.name}" class="poster-img">
+                    </a>
+                    <div class="movie-info">
+                        <h3 th:text="${series.name}">Title</h3>
+                        <p th:text="${series.voteAverage}" class="rating">★ 8.0</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div th:if="${people != null && !people.empty}">
+            <h3>People</h3>
+            <div class="grid">
+                <div th:each="person : ${people}" class="movie-card">
+                    <a th:href="@{'/person/' + ${person.id}}">
+                        <img th:src="${imageBaseUrl + '/' + posterSize + person.profilePath}"
+                             th:alt="${person.name}" class="poster-img">
+                    </a>
+                    <div class="movie-info">
+                        <h3 th:text="${person.name}">Name</h3>
+                        <p th:text="${person.knownForDepartment}" class="rating">Actor</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div th:if="${(movies == null || movies.empty) && (series == null || series.empty) && (people == null || people.empty)}">
+            <p>No results found.</p>
+        </div>
+    </div>
+</main>
+</body>
+</html>

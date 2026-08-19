@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>CosmosDomain - Favorites</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<header th:insert="~{fragments/navbar :: navbar}"></header>
+<main class="main-content">
+    <h1>My Favorites</h1>
+
+    <div th:if="${favorites != null && !favorites.empty}">
+        <div class="grid">
+            <div th:each="fav : ${favorites}" class="movie-card">
+                <div th:switch="${fav.mediaType}">
+                    <a th:case="'MOVIE'" th:href="@{'/movie/' + ${fav.mediaId}}">
+                        <div class="badge">Movie</div>
+                    </a>
+                    <a th:case="'TV_SERIES'" th:href="@{'/tv/' + ${fav.mediaId}}">
+                        <div class="badge">Series</div>
+                    </a>
+                    <a th:case="'PERSON'" th:href="@{'/person/' + ${fav.mediaId}}">
+                        <div class="badge">Person</div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div th:if="${favorites == null || favorites.empty}">
+        <p>No favorites yet. Browse movies, series, or people and add them to your favorites!</p>
+        <a th:href="@{/movies}" class="btn btn-primary">Browse Movies</a>
+        <a th:href="@{/series}" class="btn btn-secondary">Browse Series</a>
+    </div>
+</main>
+</body>
+</html>

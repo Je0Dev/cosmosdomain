@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${person.name} + ' - CosmosDomain'">CosmosDomain</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<header th:insert="~{fragments/navbar :: navbar}"></header>
+<main class="main-content">
+    <div class="person-detail">
+        <div class="person-header">
+            <img th:if="${person.profilePath}"
+                 th:src="${imageBaseUrl + '/' + posterSize + person.profilePath}"
+                 th:alt="${person.name}" class="person-poster">
+            <div class="person-info">
+                <h1 th:text="${person.name}">Person Name</h1>
+                <p th:if="${person.birthDate}" th:text="${'Born: ' + person.birthDate}">Born: 1970-01-01</p>
+                <p th:text="${'Known for: ' + person.knownForDepartment}">Known for: Acting</p>
+                <p th:if="${person.placeOfBirth}" th:text="${'Place of birth: ' + person.placeOfBirth}">Place of birth</p>
+            </div>
+        </div>
+
+        <div th:if="${person.biography}">
+            <h2>Biography</h2>
+            <p th:utext="${#strings.escapeXml(person.biography)}">Biography text</p>
+        </div>
+
+        <div th:if="${person.alsoKnownAs != null && !person.alsoKnownAs.empty}">
+            <h3>Also Known As</h3>
+            <ul>
+                <li th:each="aka : ${person.alsoKnownAs}" th:text="${aka}">Alias</li>
+            </ul>
+        </div>
+    </div>
+</main>
+</body>
+</html>

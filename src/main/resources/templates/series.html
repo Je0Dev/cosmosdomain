@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>CosmosDomain - Series</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<header th:insert="~{fragments/navbar :: navbar}"></header>
+<main class="main-content">
+    <h1>Trending Series</h1>
+    <div class="grid">
+        <div th:each="series : ${series}" class="movie-card">
+            <a th:href="@{'/tv/' + ${series.id}}">
+                <img th:src="${imageBaseUrl + '/' + posterSize + series.posterPath}"
+                     th:alt="${series.name}"
+                     class="poster-img">
+            </a>
+            <div class="movie-info">
+                <h3 th:text="${series.name}">Series Title</h3>
+                <p th:text="${series.firstAirDate}" class="year">2024</p>
+                <p th:text="${series.voteAverage}" class="rating">★ 8.0</p>
+            </div>
+        </div>
+    </div>
+    <nav th:if="${page > 1}" class="pagination">
+        <a th:href="@{'/series?page=' + (${page} - 1)}" class="btn">Previous</a>
+        <span th:text="${'Page ' + ${page}}">Page 1</span>
+        <a th:href="@{'/series?page=' + (${page} + 1)}" class="btn">Next</a>
+    </nav>
+</main>
+</body>
+</html>

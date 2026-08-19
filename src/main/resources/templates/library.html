@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6"
+      layout:decorate="~{layout}">
+<head>
+    <title>CosmosDomain - My Library</title>
+     <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<main class="main-content" layout:fragment="content">
+    <div class="page-header">
+        <h1>My Library</h1>
+    </div>
+
+    <div th:if="${error}" class="error-msg" th:text="${error}">Error message</div>
+    <div th:if="${success}" class="success-msg" th:text="${success}">Success message</div>
+
+    <div class="library-toolbar">
+        <button id="addMediaBtn" class="btn btn-primary">Add Media</button>
+    </div>
+
+    <div th:if="${mediaList != null && !mediaList.empty}">
+        <h2>Your Media</h2>
+        <div class="grid">
+            <div th:each="media : ${mediaList}" class="movie-card media-item-card">
+                <a th:href="@{'/player/' + ${media.id}}">
+                    <img th:if="${media.thumbnailPath}"
+                         th:src="@{'/player/thumbnail/' + ${media.id}}"
+                         th:alt="${media.title}" class="poster-img">
+                    <img th:unless="${media.thumbnailPath}"
+                         th:src="@{/images/no-poster.png}"
+                         th:alt="${media.title}" class="poster-img">
+                </a>
+                <div class="media-item">
+                    <div>
+                        <h3 th:text="${media.title}">Media Title</h3>
+                        <p class="media-type" th:text="${media.mediaType}">MOVIE</p>
+                        <p th:if="${media.playbackPosition > 0}"
+                           th:text="${'Continue at ' + (media.playbackPosition / 60) + ':' + String.format('%02d', media.playbackPosition % 60)}"
+                           class="resume-time">Continue at 5:30</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div th:if="${mediaList == null || mediaList.empty}">
+        <p class="empty-state">No media added yet. Add your first movie or series to start!</p>
+    </div>
+
+    <!-- Add Media Modal -->
+    <div id="addModal" class="modal" style="display:none;">
+        <div class="modal-content">
+            <span onclick="document.getElementById('addModal').style.display='none'" class="close">&times;</span>
+            <h2>Add Media to Library</h2>
+            <form th:action="@{/library/add}" method="post" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label for="title">Title</label>
+                    <input type="text" id="title" name="title" required>
+                </div>
+                <div class="form-group">
+                    <label for="mediaType">Type</label>
+                    <select id="mediaType" name="mediaType" required>
+                        <option value="MOVIE">Movie</option>
+                        <option value="TV_SERIES">TV Series</option>
+                        <option value="EPISODE">Episode</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="mediaFile">Media File (MP4, MKV, etc.)</label>
+                    <input type="file" id="mediaFile" name="mediaFile" accept="video/*" required>
+                </div>
+                <div class="form-group">
+                    <label for="thumbnailFile">Thumbnail (optional)</label>
+                    <input type="file" id="thumbnailFile" name="thumbnailFile" accept="image/*">
+                </div>
+                <button type="submit" class="btn btn-primary">Add to Library</button>
+            </form>
+        </div>
+    </div>
+</main>
+</body>
+</html>

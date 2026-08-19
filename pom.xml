@@ -4,242 +4,150 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.papel</groupId>
-    <artifactId>imdb_clone</artifactId>
-    <version>1.0-SNAPSHOT</version>
-    <name>imdb_clone</name>
+    <groupId>com.cosmosdomain</groupId>
+    <artifactId>cosmosdomain</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+    <name>CosmosDomain</name>
+    <description>Personal film &amp; TV library web app</description>
 
     <properties>
-        <!-- Project Encoding -->
+        <java.version>21</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        
-        <!-- Java Version -->
-        <java.version>21</java.version>
-        <maven.compiler.source>${java.version}</maven.compiler.source>
-        <maven.compiler.target>${java.version}</maven.compiler.target>
-        
-        <!-- Dependencies Versions -->
-        <junit.version>5.10.2</junit.version>
-        <javafx.version>21.0.3</javafx.version>
-        <slf4j.version>2.0.13</slf4j.version>
-        <jackson.version>2.17.1</jackson.version>
-        <controlsfx.version>11.2.1</controlsfx.version>
-        <jbcrypt.version>0.4</jbcrypt.version>
-        <commons-text.version>1.11.0</commons-text.version>
-        
-        <!-- Plugin Versions -->
-        <javafx.maven.plugin.version>0.0.8</javafx.maven.plugin.version>
-        <maven.compiler.plugin.version>3.13.0</maven.compiler.plugin.version>
-        <exec-maven-plugin.version>3.2.0</exec-maven-plugin.version>
-        <maven-pmd-plugin.version>3.22.0</maven-pmd-plugin.version>
-        
-        <!-- Deployment -->
-        <skip.deploy>true</skip.deploy>
+        <spring.boot.version>3.5.0</spring.boot.version>
+        <thymeleaf.version>3.1.1</thymeleaf.version>
+        <bootstrap.version>5.3.3</bootstrap.version>
+        <flyway.version>10.0.0</flyway.version>
     </properties>
 
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>${spring.boot.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
     <dependencies>
-        <!-- JavaFX Dependencies -->
+        <!-- Spring Boot -->
         <dependency>
-            <groupId>org.openjfx</groupId>
-            <artifactId>javafx-controls</artifactId>
-            <version>${javafx.version}</version>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
+
+        <!-- Spring Boot Thymeleaf -->
         <dependency>
-            <groupId>org.openjfx</groupId>
-            <artifactId>javafx-fxml</artifactId>
-            <version>${javafx.version}</version>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-thymeleaf</artifactId>
         </dependency>
+
+        <!-- Spring Security -->
         <dependency>
-            <groupId>org.openjfx</groupId>
-            <artifactId>javafx-graphics</artifactId>
-            <version>${javafx.version}</version>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
+
+        <!-- Spring Data JPA -->
         <dependency>
-            <groupId>org.openjfx</groupId>
-            <artifactId>javafx-media</artifactId>
-            <version>${javafx.version}</version>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
         </dependency>
+
+        <!-- H2 Database -->
         <dependency>
-            <groupId>org.openjfx</groupId>
-            <artifactId>javafx-web</artifactId>
-            <version>${javafx.version}</version>
-        </dependency>
-        
-        <!-- UI Components -->
-        <dependency>
-            <groupId>org.controlsfx</groupId>
-            <artifactId>controlsfx</artifactId>
-            <version>${controlsfx.version}</version>
-        </dependency>
-        
-        <!-- Logging -->
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <version>${slf4j.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-simple</artifactId>
-            <version>${slf4j.version}</version>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
             <scope>runtime</scope>
         </dependency>
-        
-        <!-- JSON Processing -->
+
+        <!-- Flyway Database Migration -->
+        <dependency>
+            <groupId>org.flywaydb</groupId>
+            <artifactId>flyway-core</artifactId>
+        </dependency>
+
+        <!-- TMDB API Client (Jackson for JSON) -->
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
-            <version>${jackson.version}</version>
         </dependency>
+
+        <!-- HTTP Client (for TMDB API fallback) - use JDK HTTP client instead of HttpComponents -->
         <dependency>
-            <groupId>com.fasterxml.jackson.datatype</groupId>
-            <artifactId>jackson-datatype-jsr310</artifactId>
-            <version>${jackson.version}</version>
+            <groupId>org.apache.httpcomponents.client5</groupId>
+            <artifactId>httpclient5</artifactId>
+            <version>5.3.1</version>
         </dependency>
-        
-        <!-- Security -->
-        <dependency>
-            <groupId>org.mindrot</groupId>
-            <artifactId>jbcrypt</artifactId>
-            <version>${jbcrypt.version}</version>
-        </dependency>
-        
-        <!-- Utilities -->
+
+        <!-- Apache Commons Text -->
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-text</artifactId>
-            <version>${commons-text.version}</version>
+            <version>1.12.0</version>
         </dependency>
-        
+
+        <!-- Thymeleaf Spring Security integration -->
+        <dependency>
+            <groupId>org.thymeleaf.extras</groupId>
+            <artifactId>thymeleaf-extras-springsecurity6</artifactId>
+        </dependency>
+
         <!-- Testing -->
         <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-api</artifactId>
-            <version>${junit.version}</version>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-engine</artifactId>
-            <version>${junit.version}</version>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-junit-jupiter</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>
 
     <build>
-        <resources>
-            <resource>
-                <directory>src/main/resources</directory>
-                <excludes>
-                    <exclude>**/README.md</exclude>
-                </excludes>
-            </resource>
-        </resources>
         <plugins>
+            <!-- Spring Boot Maven Plugin -->
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>${spring.boot.version}</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
             <!-- Maven Compiler Plugin -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>${maven.compiler.plugin.version}</version>
+                <version>3.13.0</version>
                 <configuration>
                     <release>${java.version}</release>
-                    <compilerArgs>
-                        <arg>-Xlint:all</arg>
-                    </compilerArgs>
                     <showWarnings>true</showWarnings>
                     <showDeprecation>true</showDeprecation>
+                    <compilerArgs>
+                        <arg>-parameters</arg>
+                    </compilerArgs>
                 </configuration>
-                <dependencies>
-                    <dependency>
-                        <groupId>org.ow2.asm</groupId>
-                        <artifactId>asm</artifactId>
-                        <version>9.6</version>
-                    </dependency>
-                </dependencies>
             </plugin>
-            <plugin>
-                <groupId>org.openjfx</groupId>
-                <artifactId>javafx-maven-plugin</artifactId>
-                <version>${javafx.maven.plugin.version}</version>
-                <configuration>
-                    <mainClass>com.papel.imdb_clone.StartApplication</mainClass>
-                    <launcher>app</launcher>
-                    <jlinkZipName>app</jlinkZipName>
-                    <jlinkImageName>app</jlinkImageName>
-                    <noManPages>true</noManPages>
-                    <stripDebug>true</stripDebug>
-                    <noHeaderFiles>true</noHeaderFiles>
-                    <options>
-                        <option>--add-opens=java.base/java.lang=ALL-UNNAMED</option>
-                        <option>--add-opens=java.base/java.util=ALL-UNNAMED</option>
-                        <option>--add-opens=java.base/java.security=ALL-UNNAMED</option>
-                    </options>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>default-cli</id>
-                        <configuration>
-                            <mainClass>com.papel.imdb_clone.StartApplication</mainClass>
-                            <launcher>app</launcher>
-                            <jlinkZipName>app</jlinkZipName>
-                            <jlinkImageName>app</jlinkImageName>
-                            <noManPages>true</noManPages>
-                            <stripDebug>true</stripDebug>
-                            <noHeaderFiles>true</noHeaderFiles>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <!-- Exec Maven Plugin -->
+
+            <!-- Spring Boot Loader Plugin (for executable jar) -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
-                <version>${exec-maven-plugin.version}</version>
+                <version>3.1.1</version>
                 <configuration>
-                    <mainClass>com.papel.imdb_clone.tools.UserDataRegenerator</mainClass>
+                    <mainClass>com.cosmosdomain.CosmosDomainApplication</mainClass>
                 </configuration>
-            </plugin>
-            <!-- Configure maven-deploy-plugin to skip deployment by default -->
-            <plugin>
-                <artifactId>maven-deploy-plugin</artifactId>
-                <version>3.1.2</version>
-                <configuration>
-                    <!--suppress UnresolvedMavenProperty -->
-                    <skip>${skip.deploy}</skip>
-                </configuration>
-            </plugin>
-            <!-- PMD Plugin for Code Analysis -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-pmd-plugin</artifactId>
-                <version>${maven-pmd-plugin.version}</version>
-                <dependencies>
-                    <dependency>
-                        <groupId>net.sourceforge.pmd</groupId>
-                        <artifactId>pmd-java</artifactId>
-                        <version>6.55.0</version>
-                    </dependency>
-                </dependencies>
-                <configuration>
-                    <rulesets>
-                        <ruleset>/category/java/bestpractices.xml/UnusedImports</ruleset>
-                        <ruleset>/category/java/codestyle.xml/UnusedPrivateField</ruleset>
-                        <ruleset>/category/java/codestyle.xml/UnusedLocalVariable</ruleset>
-                        <ruleset>/category/java/codestyle.xml/UnusedPrivateMethod</ruleset>
-                        <ruleset>/category/java/bestpractices.xml/UnusedFormalParameter</ruleset>
-                    </rulesets>
-                    <linkXRef>false</linkXRef>
-                    <minimumTokens>100</minimumTokens>
-                    <targetJdk>${maven.compiler.target}</targetJdk>
-                </configuration>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>check</goal>
-                        </goals>
-                    </execution>
-                </executions>
             </plugin>
         </plugins>
     </build>

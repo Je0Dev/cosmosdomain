@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6"
+      layout:decorate="~{layout}">
+<head>
+    <title>CosmosDomain - Home</title>
+</head>
+<body>
+<main class="home-page" layout:fragment="content">
+    <section class="hero">
+        <div class="hero-content">
+            <h1>CosmosDomain</h1>
+            <p class="hero-subtitle">Your universe of film & TV</p>
+            <div sec:authorize="isAnonymous()">
+                <a th:href="@{/login}" class="btn btn-primary btn-lg">Log In</a>
+                <a th:href="@{/register}" class="btn btn-secondary btn-lg">Sign Up</a>
+            </div>
+            <div sec:authorize="isAuthenticated()">
+                <a th:href="@{/movies}" class="btn btn-primary btn-lg">Browse Movies</a>
+                <a th:href="@{/series}" class="btn btn-secondary btn-lg">Browse Series</a>
+            </div>
+        </div>
+    </section>
+
+    <section class="features">
+        <h2>Features</h2>
+        <div class="feature-grid">
+            <div class="feature-card">
+                <h3>Browse Catalog</h3>
+                <p>Discover movies and TV series with full metadata from TMDB.</p>
+            </div>
+            <div class="feature-card">
+                <h3>Store Favorites</h3>
+                <p>Save your favorite movies, series, actors, and directors.</p>
+            </div>
+            <div class="feature-card">
+                <h3>Local Media Player</h3>
+                <p>Play your downloaded files with subtitle support.</p>
+            </div>
+            <div class="feature-card">
+                <h3>YouTube Trailers</h3>
+                <p>Watch trailers for any movie or series episode.</p>
+            </div>
+        </div>
+    </section>
+</main>
+</body>
+</html>

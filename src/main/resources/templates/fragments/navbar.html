@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>CosmosDomain</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+<nav th:fragment="navbar" class="navbar">
+    <a th:href="@{/}" class="brand">CosmosDomain</a>
+    <a th:href="@{/movies}">Movies</a>
+    <a th:href="@{/series}">Series</a>
+    <a th:href="@{/search}">Search</a>
+    <a th:href="@{/favorites}">Favorites</a>
+    <a th:href="@{/library}">My Library</a>
+    <form th:action="@{/logout}" method="post" class="logout-btn">
+        <button type="submit">Logout</button>
+    </form>
+</nav>
+
+</body>
+</html>

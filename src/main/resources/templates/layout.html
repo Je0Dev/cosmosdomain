@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6"
+      lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${title} ?: 'CosmosDomain'">CosmosDomain</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<header>
+    <nav class="navbar">
+        <a th:href="@{/}" class="brand">CosmosDomain</a>
+        <div sec:authorize="isAnonymous()">
+            <a th:href="@{/login}">Log In</a>
+            <a th:href="@{/register}" class="btn btn-secondary">Sign Up</a>
+        </div>
+        <div sec:authorize="isAuthenticated()">
+            <a th:href="@{/movies}">Movies</a>
+            <a th:href="@{/series}">Series</a>
+            <a th:href="@{/search}">Search</a>
+            <a th:href="@{/favorites}">Favorites</a>
+            <a th:href="@{/library}">My Library</a>
+            <form th:action="@{/logout}" method="post" class="logout-btn">
+                <button type="submit">Logout</button>
+            </form>
+        </div>
+    </nav>
+</header>
+<main th:fragment="content :: NONE">
+    <th:block th:replace="${contentTemplate :: content}"></th:block>
+</main>
+</body>
+</html>

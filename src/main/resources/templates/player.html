@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6"
+      layout:decorate="~{layout}">
+<head>
+    <title th:text="${media.title} + ' - Player'">CosmosDomain Player</title>
+</head>
+<body>
+<main class="main-content" layout:fragment="content">
+    <div class="player-container">
+        <div class="video-wrapper">
+            <video class="video-player" controls preload="metadata" id="videoPlayer" playsinline>
+                <source th:src="@{'/player/stream/' + ${media.id}}" type="video/mp4">
+                <track th:each="sub : ${subtitles}"
+                       th:src="@{'/player/subtitle/' + ${media.id} + '/' + ${sub.id}}"
+                       kind="subtitles"
+                       th:srclang="${sub.language}"
+                       th:label="${sub.label}"
+                       th:attr="default=${subStat.first}">
+                Your browser does not support the video tag.
+            </video>
+        </div>
+
+        <div class="player-controls">
+            <div class="media-info">
+                <h2 th:text="${media.title}">Media Title</h2>
+                <div class="media-meta">
+                    <span th:text="${media.mediaType}">MOVIE</span>
+                    <span th:if="${media.durationSeconds}"
+                          th:text="${'Duration: ' + (media.durationSeconds / 60) + ' min'}">Duration</span>
+                </div>
+            </div>
+
+            <div class="subtitle-controls">
+                <h4>Subtitles</h4>
+                <div th:if="${subtitles != null && !subtitles.empty}">
+                    <label>Track: </label>
+                    <select id="subtitleSelect">
+                        <option value="">Off</option>
+                        <option th:each="sub : ${subtitles}"
+                                th:value="${sub.id}"
+                                th:text="${sub.label} + ' (' + ${sub.language} + ')'">English</option>
+                    </select>
+                </div>
+                <div th:if="${subtitles == null || subtitles.empty}" class="no-subs">
+                    No subtitles available.
+                </div>
+            </div>
+
+            <div class="subtitle-upload">
+                <h4>Upload Subtitle</h4>
+                <form th:action="@{'/library/' + ${media.id} + '/subtitles'}" method="post" enctype="multipart/form-data">
+                    <input type="file" name="file" accept=".srt,.vtt,.sub" required>
+                    <input type="text" name="language" placeholder="Language (e.g. en, es, fr)" required>
+                    <input type="text" name="label" placeholder="Label (e.g. English, Spanish)" required>
+                    <button type="submit" class="btn btn-secondary">Upload</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    const video = document.getElementById('videoPlayer');
+    const subtitleSelect = document.getElementById('subtitleSelect');
+    
+    // Subtitle track switching
+    if (subtitleSelect) {
+        subtitleSelect.addEventListener('change', function() {
+            const tracks = video.textTracks;
+            for (let i = 0; i < tracks.length; i++) {
+                tracks[i].mode = tracks[i].label === this.value ? 'showing' : 'disabled';
+            }
+        });
+    }
+
+    // Save playback position
+    let lastSavedPosition = 0;
+    video.addEventListener('timeupdate', function() {
+        const position = Math.floor(this.currentTime);
+        if (position - lastSavedPosition >= 10) { // Save every 10 seconds
+            lastSavedPosition = position;
+            fetch('/library/' + /*[[${media.id}]]*/ '0' + '/position?position=' + position, {
+                method: 'POST',
+                credentials: 'same-origin'
+            }).catch(console.error);
+        }
+    });
+    /*]]>*/
+</script>
+</body>
+</html>

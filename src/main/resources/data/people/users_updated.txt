@@ -1,9 +1,0 @@
-# id,username,email,password,fullName,role
-
-1,admin,admin@imdbclone.com,admin123,Admin User,ADMIN
-2,johndoe,john.doe@example.com,password123,John Doe,USER
-3,janesmith,jane.smith@email.com,password123,Jane Smith,USER
-4,mike_johnson,mikej@example.com,password123,Mike Johnson,USER
-5,sarahmiller,sarah.m@example.com,password123,Sarah Miller,USER
-
-

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${movie.title} + ' - CosmosDomain'">CosmosDomain</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<header th:insert="~{fragments/navbar :: navbar}"></header>
+<main class="main-content">
+    <div th:if="${movie.backdropPath}" class="movie-backdrop">
+        <img th:src="${imageBaseUrl + '/' + backdropSize + movie.backdropPath}"
+             th:alt="${movie.title}">
+    </div>
+
+    <div class="movie-detail">
+        <img th:if="${movie.posterPath}"
+             th:src="${imageBaseUrl + '/' + posterSize + movie.posterPath}"
+             th:alt="${movie.title}" class="detail-poster">
+
+        <div class="detail-info">
+            <h1 th:text="${movie.title}">Movie Title</h1>
+            <p class="release-date" th:if="${movie.releaseDate}"
+               th:text="${#strings.substring(movie.releaseDate, 0, 4)}">2024</p>
+            <p class="rating">★ <span th:text="${movie.voteAverage}">8.5</span>/10</p>
+            <p class="runtime" th:if="${movie.runtime}"
+               th:text="${movie.runtime} + ' min'">120 min</p>
+
+            <div th:if="${movie.tagline}" class="tagline" th:text="${movie.tagline}">Tagline</div>
+            <div class="overview" th:utext="${movie.overview}">Overview</div>
+
+            <div th:if="${movie.videos != null && movie.videos.results.size() > 0}">
+                <h3>Trailer</h3>
+                <div class="video-wrapper">
+                    <iframe th:src="@{'https://www.youtube.com/embed/' + ${movie.videos.getFirstYouTubeKey()}}"
+                            width="560" height="315" frameborder="0"
+                            allow="accelerometer; autoplay; clipboard-write; picture-in-picture"
+                            allowfullscreen></iframe>
+                </div>
+            </div>
+
+            <div th:if="${movie.credits != null && movie.credits.cast != null && !movie.credits.cast.empty}">
+                <h3>Top Cast</h3>
+                <div class="cast-grid">
+                    <div th:each="cast : ${movie.credits.cast}" class="cast-card">
+                        <a th:href="@{'/person/' + ${cast.id}}">
+                            <img th:src="${imageBaseUrl + '/' + posterSize + cast.profilePath}"
+                                 th:alt="${cast.name}">
+                            <span th:text="${cast.name}">Actor Name</span>
+                            <small th:text="${cast.character}">Character</small>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+</body>
+</html>
