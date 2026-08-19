@@ -33,6 +33,7 @@ A personal film & TV library web app — your universe of movies, series, actors
 | **Media Player** | Integrated HTML5 video player with subtitle support |
 | **Subtitle Support** | Upload SRT files; auto-converted to WebVTT for the player |
 
+ >Note: The last three features are not yet fully completed (19.8.26 update)
 ---
 
 ## Tech Stack
