@@ -5,6 +5,12 @@ import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * JPA entity for the {@code people} table.
+ *
+ * <p>Stores actors, directors, and other crew members, including biography
+ * data and a set of known-for titles.</p>
+ */
 @Entity
 @Table(name = "people")
 public class Person {
@@ -36,6 +42,7 @@ public class Person {
     @Column(name = "gender")
     private Integer gender;
 
+    // Simple list of titles this person is known for, stored in a side table.
     @ElementCollection
     @CollectionTable(name = "person_known_for", joinColumns = @JoinColumn(name = "person_id"))
     @Column(name = "title")

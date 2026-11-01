@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
 <head>
     <meta charset="UTF-8">
     <title>CosmosDomain</title>
@@ -9,14 +10,21 @@
 
 <nav th:fragment="navbar" class="navbar">
     <a th:href="@{/}" class="brand">CosmosDomain</a>
-    <a th:href="@{/movies}">Movies</a>
-    <a th:href="@{/series}">Series</a>
-    <a th:href="@{/search}">Search</a>
-    <a th:href="@{/favorites}">Favorites</a>
-    <a th:href="@{/library}">My Library</a>
-    <form th:action="@{/logout}" method="post" class="logout-btn">
-        <button type="submit">Logout</button>
-    </form>
+
+    <div class="nav-links" sec:authorize="isAuthenticated()">
+        <a th:href="@{/movies}">Movies</a>
+        <a th:href="@{/series}">Series</a>
+        <a th:href="@{/search}">Search</a>
+        <a th:href="@{/favorites}">Favorites</a>
+        <form th:action="@{/logout}" method="post" class="logout-btn">
+            <button type="submit">Logout</button>
+        </form>
+    </div>
+
+    <div class="nav-links" sec:authorize="isAnonymous()">
+        <a th:href="@{/login}">Log In</a>
+        <a th:href="@{/register}" class="btn btn-secondary">Sign Up</a>
+    </div>
 </nav>
 
 </body>

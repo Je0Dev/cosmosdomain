@@ -2,6 +2,12 @@ package com.cosmosdomain.entity;
 
 import jakarta.persistence.*;
 
+/**
+ * JPA entity for the {@code genres} table.
+ *
+ * <p>Mirrors TMDB genre ids and names so they can be joined to movies and
+ * series in the persisted catalog model.</p>
+ */
 @Entity
 @Table(name = "genres")
 public class Genre {
@@ -10,6 +16,7 @@ public class Genre {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    // Original TMDB genre id, used to deduplicate imported genres.
     @Column(name = "tmdb_genre_id", unique = true)
     private Integer tmdbGenreId;
 

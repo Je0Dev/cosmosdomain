@@ -4,15 +4,24 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
 
+/**
+ * A single person entry as returned by TMDB search and credits endpoints.
+ *
+ * <p>The same shape is reused for cast members (character), crew members (job
+ * and department), and search results (media type and known-for fields).</p>
+ */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class TmdbPersonResult {
 
+    // Common identity fields shared by search results and credits.
     private Long id;
     private Double popularity;
     @JsonProperty("name")
     private String name;
     @JsonProperty("title")
     private String title;
+
+    // Populated for cast (character) and crew (job, department) entries.
     @JsonProperty("character")
     private String character;
     @JsonProperty("job")
@@ -21,10 +30,15 @@ public class TmdbPersonResult {
     private String department;
     @JsonProperty("known_for_department")
     private String knownForDepartment;
+
+    // Image paths: people use profile_path, titles use poster_path.
     @JsonProperty("profile_path")
     private String profilePath;
     @JsonProperty("poster_path")
     private String posterPath;
+
+    // Search-result fields for mixed movie/TV/person results.
+    @JsonProperty("media_type")
     private String mediaType;
     private String overview;
     @JsonProperty("release_date")
@@ -34,6 +48,10 @@ public class TmdbPersonResult {
     private Integer gender;
     @JsonProperty("origin_country")
     private List<String> originCountry;
+
+    // Populated only by /search/person; lists a few notable titles.
+    @JsonProperty("known_for")
+    private List<TmdbPersonResult> knownFor;
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
@@ -83,7 +101,6 @@ public class TmdbPersonResult {
     public List<String> getOriginCountry() { return originCountry; }
     public void setOriginCountry(List<String> originCountry) { this.originCountry = originCountry; }
 
-    public String getDisplayName() {
-        return name != null ? name : title;
-    }
+    public List<TmdbPersonResult> getKnownFor() { return knownFor; }
+    public void setKnownFor(List<TmdbPersonResult> knownFor) { this.knownFor = knownFor; }
 }

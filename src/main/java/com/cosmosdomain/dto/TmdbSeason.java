@@ -4,8 +4,14 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
 
+/**
+ * TMDB season summary used inside a TV detail response.
+ *
+ * <p>Holds the season number, episode count, air date, and poster metadata.</p>
+ */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class TmdbSeason {
+    // Season metadata; names mirror the TMDB JSON keys.
     @JsonProperty("air_date")
     private String airDate;
     @JsonProperty("episode_count")

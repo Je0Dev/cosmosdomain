@@ -1,29 +1,97 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6"
-      layout:decorate="~{layout}">
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CosmosDomain - Home</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 <body>
-<main class="home-page" layout:fragment="content">
+<header th:insert="~{fragments/navbar :: navbar}"></header>
+<main class="home-page">
     <section class="hero">
         <div class="hero-content">
+            <p class="hero-eyebrow">Your cinematic universe</p>
             <h1>CosmosDomain</h1>
-            <p class="hero-subtitle">Your universe of film & TV</p>
+            <p class="hero-line">Every story. Every star. One universe.</p>
+            <p class="hero-subtitle">
+                Browse movies, series, actors, and directors with live posters,
+                ratings, cast lists, and trailers pulled straight from TMDB.
+            </p>
+
             <div sec:authorize="isAnonymous()">
-                <a th:href="@{/login}" class="btn btn-primary btn-lg">Log In</a>
-                <a th:href="@{/register}" class="btn btn-secondary btn-lg">Sign Up</a>
+                <div class="hero-actions">
+                    <a th:href="@{/login}" class="btn btn-primary btn-lg">Log In</a>
+                    <a th:href="@{/register}" class="btn btn-secondary btn-lg">Create Account</a>
+                </div>
+                <p class="hero-note">Sign in to save favorites and build your personal library.</p>
             </div>
+
             <div sec:authorize="isAuthenticated()">
-                <a th:href="@{/movies}" class="btn btn-primary btn-lg">Browse Movies</a>
-                <a th:href="@{/series}" class="btn btn-secondary btn-lg">Browse Series</a>
+                <p class="hero-greeting">
+                    Welcome back, <span sec:authentication="name">explorer</span>.
+                </p>
+                <div class="hero-actions">
+                    <a th:href="@{/movies}" class="btn btn-primary btn-lg">Browse Movies</a>
+                    <a th:href="@{/series}" class="btn btn-secondary btn-lg">Browse Series</a>
+                    <a th:href="@{/search}" class="btn btn-secondary btn-lg">Search</a>
+                </div>
+            </div>
+
+            <div class="hero-stats">
+                <div class="hero-stat">
+                    <strong>Movies</strong>
+                    <span>Popular &amp; top rated</span>
+                </div>
+                <div class="hero-stat">
+                    <strong>Series</strong>
+                    <span>Trending this week</span>
+                </div>
+                <div class="hero-stat">
+                    <strong>People</strong>
+                    <span>Actors &amp; directors</span>
+                </div>
+                <div class="hero-stat">
+                    <strong>Trailers</strong>
+                    <span>Watch before you watch</span>
+                </div>
             </div>
         </div>
     </section>
 
+    <section class="spotlight">
+        <div class="section-heading">
+            <p class="section-kicker">Explore the catalog</p>
+            <h2>Pick a universe to dive into</h2>
+        </div>
+        <div class="spotlight-grid">
+            <a th:href="@{/movies}" class="spotlight-card spotlight-movies">
+                <span class="spotlight-kicker">Cinema</span>
+                <h3>Movies</h3>
+                <p>Blockbusters, hidden gems, and everything in between.</p>
+                <span class="spotlight-link">Browse movies</span>
+            </a>
+            <a th:href="@{/series}" class="spotlight-card spotlight-series">
+                <span class="spotlight-kicker">Television</span>
+                <h3>Series</h3>
+                <p>Binge-worthy shows with seasons, episodes, and cast details.</p>
+                <span class="spotlight-link">Browse series</span>
+            </a>
+            <a th:href="@{/search}" class="spotlight-card spotlight-people">
+                <span class="spotlight-kicker">Talent</span>
+                <h3>People</h3>
+                <p>Follow the actors and directors behind your favorite stories.</p>
+                <span class="spotlight-link">Find people</span>
+            </a>
+        </div>
+    </section>
+
     <section class="features">
-        <h2>Features</h2>
+        <div class="section-heading">
+            <p class="section-kicker">Built for discovery</p>
+            <h2>Everything you need to find your next favorite</h2>
+        </div>
         <div class="feature-grid">
             <div class="feature-card">
                 <h3>Browse Catalog</h3>
@@ -34,14 +102,26 @@
                 <p>Save your favorite movies, series, actors, and directors.</p>
             </div>
             <div class="feature-card">
-                <h3>Local Media Player</h3>
-                <p>Play your downloaded files with subtitle support.</p>
+                <h3>YouTube Trailers</h3>
+                <p>Watch trailers for movies and series before you commit to the binge.</p>
             </div>
             <div class="feature-card">
-                <h3>YouTube Trailers</h3>
-                <p>Watch trailers for any movie or series episode.</p>
+                <h3>Episode Guides</h3>
+                <p>Open any season to browse episode stills, air dates, and runtimes.</p>
             </div>
         </div>
+    </section>
+
+    <section class="home-band">
+        <div>
+            <p class="section-kicker">Live from TMDB</p>
+            <h2>Fresh posters, ratings, cast, and trailers.</h2>
+            <p>
+                CosmosDomain keeps the catalog current by reading directly from
+                The Movie Database, so there is always something new to explore.
+            </p>
+        </div>
+        <a th:href="@{/movies}" class="btn btn-primary btn-lg">Start exploring</a>
     </section>
 </main>
 </body>

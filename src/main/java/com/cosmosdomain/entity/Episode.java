@@ -3,6 +3,12 @@ package com.cosmosdomain.entity;
 import jakarta.persistence.*;
 import java.time.LocalDate;
 
+/**
+ * JPA entity for the {@code episodes} table.
+ *
+ * <p>Represents one episode of a season. Part of the persisted catalog model;
+ * the current web layer reads catalog data directly from TMDB instead.</p>
+ */
 @Entity
 @Table(name = "episodes")
 public class Episode {
@@ -11,6 +17,7 @@ public class Episode {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    // Parent season; episodes are always reached through it.
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "season_id")
     private Season season;

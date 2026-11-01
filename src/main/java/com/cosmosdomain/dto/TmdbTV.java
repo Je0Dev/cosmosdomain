@@ -4,12 +4,21 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
 
+/**
+ * TMDB TV series payload.
+ *
+ * <p>Used for trending/on-the-air lists and for the detailed series response
+ * with appended genres, seasons, credits, and videos.</p>
+ */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class TmdbTV {
 
+    // Core metadata (names match the TMDB JSON).
     private Long id;
     private String name;
     private String overview;
+
+    // Snake_case TMDB keys mapped to Java-style field names.
     @JsonProperty("first_air_date")
     private String firstAirDate;
     @JsonProperty("last_air_date")
@@ -31,6 +40,8 @@ public class TmdbTV {
     private boolean inProduction;
     @JsonProperty("youtube_trailer_key")
     private String youtubeTrailerKey;
+
+    // Nested objects included when append_to_response is used on detail calls.
     private List<TmdbGenre> genres;
     private List<TmdbSeason> seasons;
     private TmdbCredits credits;

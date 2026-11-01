@@ -5,17 +5,19 @@ import com.cosmosdomain.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
-import org.mockito.InOrder;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
+/**
+ * Unit tests for {@link AuthService} registration behavior.
+ *
+ * <p>Uses Mockito to isolate the repository and password encoder. Covers the
+ * happy path plus duplicate username and duplicate email validation.</p>
+ */
 class AuthServiceTest {
 
     private UserRepository userRepository;
@@ -30,6 +32,8 @@ class AuthServiceTest {
         authService = new AuthService(userRepository, passwordEncoder);
     }
 
+    // Happy path: the repository receives a user whose password is hashed and
+    // not equal to the raw password supplied by the caller.
     @Test
     void testRegister_NewUser_SavesWithHashedPassword() {
         when(userRepository.existsByUsername("newuser")).thenReturn(false);
@@ -54,6 +58,7 @@ class AuthServiceTest {
         assertTrue(captured.getPasswordHash().startsWith("{bcrypt}"));
     }
 
+    // A taken username must fail before the repository is asked to save.
     @Test
     void testRegister_DuplicateUsername_ThrowsException() {
         when(userRepository.existsByUsername("existing")).thenReturn(true);
@@ -65,6 +70,7 @@ class AuthServiceTest {
         verify(userRepository, never()).save(any(User.class));
     }
 
+    // Same guarantee for a duplicate email address.
     @Test
     void testRegister_DuplicateEmail_ThrowsException() {
         when(userRepository.existsByUsername("newuser")).thenReturn(false);

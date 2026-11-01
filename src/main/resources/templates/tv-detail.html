@@ -20,13 +20,76 @@
 
         <div class="detail-info">
             <h1 th:text="${series.name}">Series Title</h1>
-            <p class="release-date" th:if="${series.firstAirDate}"
+            <button type="button" id="favoriteBtn"
+                    class="btn btn-secondary favorite-btn"
+                    th:classappend="${isFavorite} ? ' favorited' : ''"
+                    th:attr="data-type='TV_SERIES',data-id=${series.id}"
+                    th:text="${isFavorite} ? '★ Remove from Favorites' : '☆ Add to Favorites'">
+                Add to Favorites
+            </button>
+            <p class="release-date"
+               th:if="${series.firstAirDate != null && series.firstAirDate.length() >= 4}"
                th:text="${#strings.substring(series.firstAirDate, 0, 4)}">2024</p>
-            <p class="rating">★ <span th:text="${series.voteAverage}">8.0</span>/10</p>
+            <p class="rating">
+                ★ <span th:text="${series.voteAverage}">8.0</span>/10
+                <small class="vote-count" th:if="${series.voteCount != null}"
+                       th:text="${'(' + series.voteCount + ' votes)'}">(12,345 votes)</small>
+            </p>
             <p th:text="${series.numberOfSeasons + ' Seasons • ' + series.numberOfEpisodes + ' Episodes'}">10 Seasons • 100 Episodes</p>
-            <p th:text="${series.status}">Status</p>
+
+            <div class="genre-list" th:if="${series.genres != null && !series.genres.empty}">
+                <span class="genre-pill" th:each="genre : ${series.genres}"
+                      th:text="${genre.name}">Drama</span>
+            </div>
+
+            <div class="detail-facts">
+                <p th:if="${series.status}">
+                    <strong>Status</strong>
+                    <span th:text="${series.status}">Ended</span>
+                </p>
+                <p th:if="${series.lastAirDate}">
+                    <strong>Last aired</strong>
+                    <span th:text="${series.lastAirDate}">2024-01-01</span>
+                </p>
+                <p>
+                    <strong>In production</strong>
+                    <span th:text="${series.inProduction ? 'Yes' : 'No'}">No</span>
+                </p>
+            </div>
 
             <div class="overview" th:utext="${series.overview}">Overview</div>
+
+            <div class="credit-block"
+                 th:if="${series.credits != null && series.credits.directors != null && !series.credits.directors.empty}">
+                <h3>Directors</h3>
+                <ul class="credit-list">
+                    <li th:each="director : ${series.credits.directors}">
+                        <a th:href="@{'/person/' + ${director.id}}"
+                           th:text="${director.name}">Director</a>
+                    </li>
+                </ul>
+            </div>
+
+            <div th:if="${series.seasons != null && !series.seasons.empty}">
+                <h3>Seasons</h3>
+                <div class="season-grid">
+                    <a th:each="s : ${series.seasons}"
+                       th:href="@{/tv/{id}/season/{number}(id=${series.id},number=${s.seasonNumber})}"
+                       class="season-card">
+                        <img th:if="${s.posterPath}"
+                             th:src="${imageBaseUrl + '/' + posterSize + s.posterPath}"
+                             th:alt="${s.name}">
+                        <div th:unless="${s.posterPath}" class="poster-placeholder"
+                             th:text="${s.name}">Season</div>
+                        <div class="season-info">
+                            <strong th:text="${s.name}">Season 1</strong>
+                            <small th:text="${s.episodeCount + ' episodes'}">10 episodes</small>
+                            <small th:if="${s.airDate != null && s.airDate.length() >= 4}"
+                                   th:text="${#strings.substring(s.airDate, 0, 4)}">2024</small>
+                        </div>
+                    </a>
+                </div>
+            </div>
 
             <div th:if="${series.videos != null && series.videos.results.size() > 0}">
                 <h3>Trailer</h3>
@@ -54,5 +117,25 @@
         </div>
     </div>
 </main>
+<script th:inline="javascript">
+    const favoriteBtn = document.getElementById('favoriteBtn');
+    if (favoriteBtn) {
+        favoriteBtn.addEventListener('click', async () => {
+            const params = new URLSearchParams({
+                mediaType: favoriteBtn.dataset.type,
+                mediaId: favoriteBtn.dataset.id
+            });
+            const response = await fetch('/favorites/toggle', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                body: params
+            });
+            if (!response.ok) return;
+            const added = (await response.text()) === 'added';
+            favoriteBtn.textContent = added ? '★ Remove from Favorites' : '☆ Add to Favorites';
+            favoriteBtn.classList.toggle('favorited', added);
+        });
+    }
+</script>
 </body>
 </html>
