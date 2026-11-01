@@ -5,6 +5,13 @@ import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * JPA entity for the {@code movies} table.
+ *
+ * <p>Holds the persisted movie catalog row together with its genre, cast, and
+ * director relationships. The current web layer uses TMDB DTOs directly, so
+ * this entity is reserved for future local catalog storage.</p>
+ */
 @Entity
 @Table(name = "movies")
 public class Movie {
@@ -58,6 +65,7 @@ public class Movie {
     @Column(name = "home_page", columnDefinition = "TEXT")
     private String homePage;
 
+    // Many-to-many relationships backed by the join tables created in V7.
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
         name = "movie_genres",

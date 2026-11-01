@@ -18,7 +18,7 @@
             </a>
             <div class="movie-info">
                 <h3 th:text="${movie.title}">Movie Title</h3>
-                <p th:if="${movie.releaseDate}"
+                <p th:if="${movie.releaseDate != null && movie.releaseDate.length() >= 4}"
                    th:text="${#strings.substring(movie.releaseDate, 0, 4)}">2024</p>
                 <p th:text="${movie.voteAverage}" class="rating">★ 8.5</p>
             </div>

@@ -32,8 +32,15 @@
                              th:alt="${movie.title}" class="poster-img">
                     </a>
                     <div class="movie-info">
+                        <span class="badge">Movie</span>
                         <h3 th:text="${movie.title}">Title</h3>
-                        <p th:text="${movie.voteAverage}" class="rating">★ 8.0</p>
+                        <p class="search-meta">
+                            <span th:if="${movie.releaseDate != null && movie.releaseDate.length() >= 4}"
+                                  th:text="${#strings.substring(movie.releaseDate, 0, 4)}">2024</span>
+                            <span class="rating" th:text="${'★ ' + movie.voteAverage}">★ 8.0</span>
+                        </p>
+                        <p class="search-overview" th:if="${movie.overview}"
+                           th:text="${#strings.abbreviate(movie.overview, 120)}">Overview</p>
                     </div>
                 </div>
             </div>
@@ -48,8 +55,15 @@
                              th:alt="${series.name}" class="poster-img">
                     </a>
                     <div class="movie-info">
+                        <span class="badge">Series</span>
                         <h3 th:text="${series.name}">Title</h3>
-                        <p th:text="${series.voteAverage}" class="rating">★ 8.0</p>
+                        <p class="search-meta">
+                            <span th:if="${series.firstAirDate != null && series.firstAirDate.length() >= 4}"
+                                  th:text="${#strings.substring(series.firstAirDate, 0, 4)}">2024</span>
+                            <span class="rating" th:text="${'★ ' + series.voteAverage}">★ 8.0</span>
+                        </p>
+                        <p class="search-overview" th:if="${series.overview}"
+                           th:text="${#strings.abbreviate(series.overview, 120)}">Overview</p>
                     </div>
                 </div>
             </div>
@@ -64,8 +78,14 @@
                              th:alt="${person.name}" class="poster-img">
                     </a>
                     <div class="movie-info">
+                        <span class="badge">Person</span>
                         <h3 th:text="${person.name}">Name</h3>
-                        <p th:text="${person.knownForDepartment}" class="rating">Actor</p>
+                        <p class="search-meta" th:if="${person.knownForDepartment}"
+                           th:text="${person.knownForDepartment}">Acting</p>
+                        <p class="search-overview" th:if="${person.knownFor != null && !person.knownFor.empty}">
+                            <span th:each="work, iter : ${person.knownFor}"
+                                  th:text="${(work.title ?: work.name) + (iter.last ? '' : ', ')}">Title</span>
+                        </p>
                     </div>
                 </div>
             </div>

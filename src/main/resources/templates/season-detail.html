@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${series.name + ' - ' + season.name + ' - CosmosDomain'}">CosmosDomain</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<header th:insert="~{fragments/navbar :: navbar}"></header>
+<main class="main-content">
+    <a th:href="@{/tv/{id}(id=${series.id})}" class="back-link"
+       th:text="${'← Back to ' + series.name}">← Back to series</a>
+
+    <div th:if="${series.backdropPath}" class="movie-backdrop">
+        <img th:src="${imageBaseUrl + '/' + backdropSize + series.backdropPath}"
+             th:alt="${series.name}">
+    </div>
+
+    <div class="season-header">
+        <img th:if="${season.posterPath}"
+             th:src="${imageBaseUrl + '/' + posterSize + season.posterPath}"
+             th:alt="${season.name}" class="detail-poster">
+        <div class="season-header-info">
+            <p class="release-date" th:text="${series.name}">Series</p>
+            <h1 th:text="${season.name}">Season 1</h1>
+            <p class="release-date" th:if="${season.airDate}"
+               th:text="${'Aired ' + season.airDate}">Aired</p>
+            <p class="rating" th:if="${season.voteAverage != null}">
+                ★ <span th:text="${#numbers.formatDecimal(season.voteAverage, 1, 1)}">8.0</span>/10
+            </p>
+            <p th:if="${season.episodes != null}"
+               th:text="${season.episodes.size() + ' Episodes'}">10 Episodes</p>
+            <div class="overview" th:if="${season.overview}" th:utext="${season.overview}">Overview</div>
+        </div>
+    </div>
+
+    <h2 class="section-title">Episodes</h2>
+    <div class="episode-list" th:if="${season.episodes != null && !season.episodes.empty}">
+        <article class="episode-card" th:each="ep : ${season.episodes}">
+            <div class="episode-still">
+                <img th:if="${ep.stillPath}"
+                     th:src="${imageBaseUrl + '/' + stillSize + ep.stillPath}"
+                     th:alt="${ep.name}">
+                <div th:unless="${ep.stillPath}" class="poster-placeholder">No still</div>
+            </div>
+            <div class="episode-info">
+                <div class="episode-title">
+                    <span class="episode-number"
+                          th:text="${ep.episodeNumber != null ? 'E' + ep.episodeNumber : ''}">E1</span>
+                    <h3 th:text="${ep.name}">Episode title</h3>
+                </div>
+                <p class="episode-meta">
+                    <span th:if="${ep.airDate}" th:text="${ep.airDate}">2024-01-01</span>
+                    <span th:if="${ep.runtime}" th:text="${ep.runtime + ' min'}">45 min</span>
+                    <span class="rating" th:if="${ep.voteAverage != null}"
+                          th:text="${'★ ' + #numbers.formatDecimal(ep.voteAverage, 1, 1)}">★ 8.0</span>
+                </p>
+                <p class="episode-overview" th:if="${ep.overview}" th:text="${ep.overview}">Overview</p>
+            </div>
+        </article>
+    </div>
+    <p th:if="${season.episodes == null || season.episodes.empty}">No episodes available.</p>
+</main>
+</body>
+</html>

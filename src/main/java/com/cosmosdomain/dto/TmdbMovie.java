@@ -4,12 +4,23 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
 
+/**
+ * TMDB movie payload.
+ *
+ * <p>Used both for list endpoints (popular, now playing, etc.) and for the
+ * detailed movie response when {@code append_to_response} adds genres,
+ * credits, and videos. Fields without a {@code @JsonProperty} use the same
+ * name in the TMDB JSON.</p>
+ */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class TmdbMovie {
 
+    // Core metadata (names match the TMDB JSON).
     private Long id;
     private String title;
     private String overview;
+
+    // TMDB uses snake_case for these keys, hence the explicit mappings.
     @JsonProperty("release_date")
     private String releaseDate;
     @JsonProperty("poster_path")
@@ -29,7 +40,11 @@ public class TmdbMovie {
     private String imdbId;
     @JsonProperty("home_page")
     private String homePage;
+
+    // Populated by the videos append; templates read the YouTube key from here.
     private String youtubeTrailerKey;
+
+    // Nested objects included when append_to_response is used on detail calls.
     private List<TmdbGenre> genres;
     private TmdbCredits credits;
     private TmdbVideos videos;

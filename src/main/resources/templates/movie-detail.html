@@ -20,14 +20,67 @@
 
         <div class="detail-info">
             <h1 th:text="${movie.title}">Movie Title</h1>
-            <p class="release-date" th:if="${movie.releaseDate}"
+            <button type="button" id="favoriteBtn"
+                    class="btn btn-secondary favorite-btn"
+                    th:classappend="${isFavorite} ? ' favorited' : ''"
+                    th:attr="data-type='MOVIE',data-id=${movie.id}"
+                    th:text="${isFavorite} ? '★ Remove from Favorites' : '☆ Add to Favorites'">
+                Add to Favorites
+            </button>
+            <p class="release-date"
+               th:if="${movie.releaseDate != null && movie.releaseDate.length() >= 4}"
                th:text="${#strings.substring(movie.releaseDate, 0, 4)}">2024</p>
-            <p class="rating">★ <span th:text="${movie.voteAverage}">8.5</span>/10</p>
+            <p class="rating">
+                ★ <span th:text="${movie.voteAverage}">8.5</span>/10
+                <small class="vote-count" th:if="${movie.voteCount != null}"
+                       th:text="${'(' + movie.voteCount + ' votes)'}">(12,345 votes)</small>
+            </p>
             <p class="runtime" th:if="${movie.runtime}"
                th:text="${movie.runtime} + ' min'">120 min</p>
 
-            <div th:if="${movie.tagline}" class="tagline" th:text="${movie.tagline}">Tagline</div>
+            <div class="genre-list" th:if="${movie.genres != null && !movie.genres.empty}">
+                <span class="genre-pill" th:each="genre : ${movie.genres}"
+                      th:text="${genre.name}">Action</span>
+            </div>
+
+            <div class="detail-facts"
+                 th:if="${movie.status != null || (movie.budget != null && movie.budget > 0) || (movie.revenue != null && movie.revenue > 0) || movie.homePage != null || movie.imdbId != null}">
+                <p th:if="${movie.status}">
+                    <strong>Status</strong>
+                    <span th:text="${movie.status}">Released</span>
+                </p>
+                <p th:if="${movie.budget != null && movie.budget > 0}">
+                    <strong>Budget</strong>
+                    <span th:text="${'$' + #numbers.formatInteger(movie.budget, 1, 'COMMA')}">$100,000,000</span>
+                </p>
+                <p th:if="${movie.revenue != null && movie.revenue > 0}">
+                    <strong>Revenue</strong>
+                    <span th:text="${'$' + #numbers.formatInteger(movie.revenue, 1, 'COMMA')}">$200,000,000</span>
+                </p>
+                <p th:if="${movie.homePage != null && !movie.homePage.isEmpty()}">
+                    <strong>Website</strong>
+                    <a th:href="${movie.homePage}" target="_blank" rel="noopener">Official site</a>
+                </p>
+                <p th:if="${movie.imdbId != null}">
+                    <strong>IMDb</strong>
+                    <a th:href="${'https://www.imdb.com/title/' + movie.imdbId}"
+                       target="_blank" rel="noopener" th:text="${movie.imdbId}">tt0000000</a>
+                </p>
+            </div>
+
+            <div class="tagline" th:if="${movie.tagline}" th:text="${movie.tagline}">Tagline</div>
             <div class="overview" th:utext="${movie.overview}">Overview</div>
+
+            <div class="credit-block"
+                 th:if="${movie.credits != null && movie.credits.directors != null && !movie.credits.directors.empty}">
+                <h3>Director</h3>
+                <ul class="credit-list">
+                    <li th:each="director : ${movie.credits.directors}">
+                        <a th:href="@{'/person/' + ${director.id}}"
+                           th:text="${director.name}">Director</a>
+                    </li>
+                </ul>
+            </div>
 
             <div th:if="${movie.videos != null && movie.videos.results.size() > 0}">
                 <h3>Trailer</h3>
@@ -55,5 +108,25 @@
         </div>
     </div>
 </main>
+<script th:inline="javascript">
+    const favoriteBtn = document.getElementById('favoriteBtn');
+    if (favoriteBtn) {
+        favoriteBtn.addEventListener('click', async () => {
+            const params = new URLSearchParams({
+                mediaType: favoriteBtn.dataset.type,
+                mediaId: favoriteBtn.dataset.id
+            });
+            const response = await fetch('/favorites/toggle', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                body: params
+            });
+            if (!response.ok) return;
+            const added = (await response.text()) === 'added';
+            favoriteBtn.textContent = added ? '★ Remove from Favorites' : '☆ Add to Favorites';
+            favoriteBtn.classList.toggle('favorited', added);
+        });
+    }
+</script>
 </body>
 </html>

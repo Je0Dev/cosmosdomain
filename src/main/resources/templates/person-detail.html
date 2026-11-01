@@ -15,18 +15,63 @@
                  th:alt="${person.name}" class="person-poster">
             <div class="person-info">
                 <h1 th:text="${person.name}">Person Name</h1>
-                <p th:if="${person.birthDate}" th:text="${'Born: ' + person.birthDate}">Born: 1970-01-01</p>
-                <p th:text="${'Known for: ' + person.knownForDepartment}">Known for: Acting</p>
-                <p th:if="${person.placeOfBirth}" th:text="${'Place of birth: ' + person.placeOfBirth}">Place of birth</p>
+                <button type="button" id="favoriteBtn"
+                        class="btn btn-secondary favorite-btn"
+                        th:classappend="${isFavorite} ? ' favorited' : ''"
+                        th:attr="data-type='PERSON',data-id=${person.id}"
+                        th:text="${isFavorite} ? '★ Remove from Favorites' : '☆ Add to Favorites'">
+                    Add to Favorites
+                </button>
+                <div class="person-meta">
+                    <p th:if="${person.birthDate}" th:text="${'Born: ' + person.birthDate}">Born: 1970-01-01</p>
+                    <p th:if="${person.deathDate}" th:text="${'Died: ' + person.deathDate}">Died: 2024-01-01</p>
+                    <p th:text="${'Known for: ' + person.knownForDepartment}">Known for: Acting</p>
+                    <p th:if="${person.placeOfBirth}" th:text="${'Place of birth: ' + person.placeOfBirth}">Place of birth</p>
+                    <p th:if="${person.gender != null && person.gender == 1}">Gender: Female</p>
+                    <p th:if="${person.gender != null && person.gender == 2}">Gender: Male</p>
+                    <p th:if="${person.popularity != null}" th:text="${'Popularity: ' + person.popularity}">Popularity: 123.4</p>
+                </div>
             </div>
         </div>
 
-        <div th:if="${person.biography}">
+        <div class="person-known-for" th:if="${person.knownFor != null && !person.knownFor.empty}">
+            <h3>Known For</h3>
+            <div class="known-for-grid">
+                <a th:each="work : ${person.knownFor}"
+                   th:if="${work.mediaType == 'movie'}"
+                   th:href="@{/movie/{id}(id=${work.id})}"
+                   class="known-for-card">
+                    <img th:if="${work.posterPath}"
+                         th:src="${imageBaseUrl + '/' + posterSize + work.posterPath}"
+                         th:alt="${work.title}">
+                    <div th:unless="${work.posterPath}" class="poster-placeholder"
+                         th:text="${work.title}">Title</div>
+                    <span th:text="${work.title}">Title</span>
+                    <small th:if="${work.releaseDate != null && work.releaseDate.length() >= 4}"
+                           th:text="${#strings.substring(work.releaseDate, 0, 4)}">2024</small>
+                </a>
+                <a th:each="work : ${person.knownFor}"
+                   th:if="${work.mediaType == 'tv'}"
+                   th:href="@{/tv/{id}(id=${work.id})}"
+                   class="known-for-card">
+                    <img th:if="${work.posterPath}"
+                         th:src="${imageBaseUrl + '/' + posterSize + work.posterPath}"
+                         th:alt="${work.name}">
+                    <div th:unless="${work.posterPath}" class="poster-placeholder"
+                         th:text="${work.name}">Title</div>
+                    <span th:text="${work.name}">Title</span>
+                    <small th:if="${work.firstAirDate != null && work.firstAirDate.length() >= 4}"
+                           th:text="${#strings.substring(work.firstAirDate, 0, 4)}">2024</small>
+                </a>
+            </div>
+        </div>
+
+        <div class="person-bio" th:if="${person.biography}">
             <h2>Biography</h2>
             <p th:utext="${#strings.escapeXml(person.biography)}">Biography text</p>
         </div>
 
-        <div th:if="${person.alsoKnownAs != null && !person.alsoKnownAs.empty}">
+        <div class="person-aliases" th:if="${person.alsoKnownAs != null && !person.alsoKnownAs.empty}">
             <h3>Also Known As</h3>
             <ul>
                 <li th:each="aka : ${person.alsoKnownAs}" th:text="${aka}">Alias</li>
@@ -34,5 +79,25 @@
         </div>
     </div>
 </main>
+<script th:inline="javascript">
+    const favoriteBtn = document.getElementById('favoriteBtn');
+    if (favoriteBtn) {
+        favoriteBtn.addEventListener('click', async () => {
+            const params = new URLSearchParams({
+                mediaType: favoriteBtn.dataset.type,
+                mediaId: favoriteBtn.dataset.id
+            });
+            const response = await fetch('/favorites/toggle', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                body: params
+            });
+            if (!response.ok) return;
+            const added = (await response.text()) === 'added';
+            favoriteBtn.textContent = added ? '★ Remove from Favorites' : '☆ Add to Favorites';
+            favoriteBtn.classList.toggle('favorited', added);
+        });
+    }
+</script>
 </body>
 </html>

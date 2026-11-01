@@ -12,17 +12,19 @@
 
     <div th:if="${favorites != null && !favorites.empty}">
         <div class="grid">
-            <div th:each="fav : ${favorites}" class="movie-card">
-                <div th:switch="${fav.mediaType}">
-                    <a th:case="'MOVIE'" th:href="@{'/movie/' + ${fav.mediaId}}">
-                        <div class="badge">Movie</div>
-                    </a>
-                    <a th:case="'TV_SERIES'" th:href="@{'/tv/' + ${fav.mediaId}}">
-                        <div class="badge">Series</div>
-                    </a>
-                    <a th:case="'PERSON'" th:href="@{'/person/' + ${fav.mediaId}}">
-                        <div class="badge">Person</div>
-                    </a>
+            <div th:each="fav : ${favorites}" class="movie-card favorite-card"
+                 th:attr="data-type=${fav.mediaType()},data-id=${fav.mediaId()}">
+                <a th:href="@{${fav.detailPath()}}">
+                    <img th:if="${fav.imageUrl()}" th:src="${fav.imageUrl()}"
+                         th:alt="${fav.title()}" class="poster-img">
+                    <div th:unless="${fav.imageUrl()}" class="poster-placeholder"
+                         th:text="${fav.title()}">Title</div>
+                </a>
+                <div class="movie-info">
+                    <span class="badge" th:text="${fav.typeLabel()}">Movie</span>
+                    <h3 th:text="${fav.title()}">Title</h3>
+                    <p th:if="${fav.subtitle()}" th:text="${fav.subtitle()}">2024</p>
+                    <button type="button" class="btn btn-secondary remove-favorite">Remove</button>
                 </div>
             </div>
         </div>
@@ -34,5 +36,27 @@
         <a th:href="@{/series}" class="btn btn-secondary">Browse Series</a>
     </div>
 </main>
+
+<script>
+    document.querySelectorAll('.remove-favorite').forEach(function (button) {
+        button.addEventListener('click', async function () {
+            const card = button.closest('.favorite-card');
+            const params = new URLSearchParams({
+                mediaType: card.dataset.type,
+                mediaId: card.dataset.id
+            });
+            const response = await fetch('/favorites/toggle', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                body: params
+            });
+            if (!response.ok) return;
+            card.remove();
+            if (!document.querySelector('.favorite-card')) {
+                window.location.reload();
+            }
+        });
+    });
+</script>
 </body>
 </html>

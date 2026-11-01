@@ -12,6 +12,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
+/**
+ * Handles the multi-type search page.
+ *
+ * <p>Delegates to TMDB for movies, TV series, and people. When the caller does
+ * not choose a type, all three searches run and their results are combined in
+ * the model under separate attributes.</p>
+ */
 @Controller
 public class SearchController {
 
@@ -23,6 +30,8 @@ public class SearchController {
         this.props = props;
     }
 
+    // Runs one or all TMDB searches depending on the selected type. A blank
+    // query simply renders the empty search form.
     @GetMapping("/search")
     public String search(@RequestParam(defaultValue = "") String query,
                          @RequestParam(defaultValue = "all") String type,
@@ -33,6 +42,8 @@ public class SearchController {
             return "search";
         }
 
+        // Each branch adds only the result lists relevant to the requested type;
+        // the template renders whichever attributes are present.
         switch (type) {
             case "movie" -> {
                 List<TmdbMovie> movies = tmdbClient.searchMovies(query);

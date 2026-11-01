@@ -5,6 +5,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ * Serves the authentication views and handles account registration.
+ *
+ * <p>Login itself is processed by Spring Security; this controller only renders
+ * the login form, creates users, and redirects back to the login page with
+ * success or error feedback.</p>
+ */
 @Controller
 public class AuthController {
 
@@ -14,6 +21,8 @@ public class AuthController {
         this.authService = authService;
     }
 
+    // Renders the login form. The form posts back to Spring Security's
+    // configured login-processing URL, not to this controller.
     @GetMapping("/login")
     public String login() {
         return "auth/login";
@@ -24,6 +33,8 @@ public class AuthController {
         return "auth/register";
     }
 
+    // Creates the account and redirects to the login page with a success flag.
+    // Validation failures are rendered back into the same form.
     @PostMapping("/register")
     public String register(@RequestParam String username,
                            @RequestParam String email,
@@ -40,6 +51,8 @@ public class AuthController {
         }
     }
 
+    // Kept for compatibility with custom logout links; Spring Security already
+    // redirects to /login?logout by default.
     @GetMapping("/logout-success")
     public String logoutSuccess() {
         return "redirect:/login?logout";

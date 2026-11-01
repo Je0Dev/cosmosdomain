@@ -5,6 +5,13 @@ import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * JPA entity for the {@code tv_series} table.
+ *
+ * <p>Holds the persisted series catalog row with its seasons, genres, actors,
+ * and creators. Like {@link Movie}, it is reserved for future local catalog
+ * storage because the current web layer uses TMDB DTOs.</p>
+ */
 @Entity
 @Table(name = "tv_series")
 public class TVSeries {
@@ -55,6 +62,7 @@ public class TVSeries {
     @Column(name = "youtube_trailer_key")
     private String youtubeTrailerKey;
 
+    // Seasons and episodes are owned by the series; deleting a series cascades.
     @OneToMany(mappedBy = "series", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<Season> seasons = new HashSet<>();
 

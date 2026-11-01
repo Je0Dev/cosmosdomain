@@ -4,8 +4,17 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
 
+/**
+ * Generic wrapper for TMDB list responses.
+ *
+ * <p>TMDB returns results inside a paging envelope; this class exposes the
+ * current page, the result list, and the total counts.</p>
+ *
+ * @param <T> element type of the {@code results} array
+ */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class TmdbResponse<T> {
+    // Paging metadata returned by every TMDB list endpoint.
     private Integer page;
     @JsonProperty("results")
     private List<T> results;

@@ -8,14 +8,22 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+/**
+ * Development-only data seeder.
+ *
+ * <p>Creates two demo accounts ({@code testuser} and {@code admin}) the first
+ * time the application runs with the {@code dev} profile active. This bean is
+ * not loaded in production profiles.</p>
+ */
 @Configuration
-@Profile("dev")
+@Profile("dev") // Loaded only when spring.profiles.active includes dev.
 public class DataSeeder {
 
     @Bean
     CommandLineRunner initTestData(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         return args -> {
 
+            // Seed only when the account is missing so restarts stay idempotent.
             if (!userRepository.existsByUsername("testuser")) {
                 User user = new User();
                 user.setUsername("testuser");
@@ -29,6 +37,7 @@ public class DataSeeder {
                 System.out.println("Created test user: testuser / test123");
             }
 
+            // Second demo account; note that no role/authority is granted.
             if (!userRepository.existsByUsername("admin")) {
                 User admin = new User();
                 admin.setUsername("admin");

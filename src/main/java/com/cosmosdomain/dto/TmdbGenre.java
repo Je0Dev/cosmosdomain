@@ -2,6 +2,11 @@ package com.cosmosdomain.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+/**
+ * TMDB genre payload ({@code id} and {@code name}).
+ *
+ * <p>Used inside movie and TV detail responses.</p>
+ */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class TmdbGenre {
     private Integer id;

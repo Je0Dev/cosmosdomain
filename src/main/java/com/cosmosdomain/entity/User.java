@@ -3,6 +3,12 @@ package com.cosmosdomain.entity;
 import jakarta.persistence.*;
 import java.time.LocalDate;
 
+/**
+ * JPA entity for the {@code users} table.
+ *
+ * <p>Stores account credentials (BCrypt hash), profile names, and the active
+ * and locked flags consulted by Spring Security during login.</p>
+ */
 @Entity
 @Table(name = "users")
 public class User {
@@ -11,12 +17,14 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    // Login identifier and contact address; both must be unique.
     @Column(unique = true, nullable = false)
     private String username;
 
     @Column(unique = true, nullable = false)
     private String email;
 
+    // BCrypt hash, never the raw password.
     @Column(nullable = false)
     private String passwordHash;
 
@@ -26,10 +34,12 @@ public class User {
     @Column(name = "last_name")
     private String lastName;
 
+    // Security flags consumed by AuthService.loadUserByUsername.
     private boolean active = true;
 
     private boolean locked = false;
 
+    // Audit timestamps; createdAt is immutable after insert.
     @Column(name = "created_at", updatable = false)
     private LocalDate createdAt = LocalDate.now();
 

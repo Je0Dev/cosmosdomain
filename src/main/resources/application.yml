@@ -4,7 +4,7 @@ cosmosdomain:
   image-base-url: https://image.tmdb.org/t/p
   poster-size: w500
   backdrop-size: w1280
-  media-dir: ./media
+  still-size: w300
 
 spring:
   application:

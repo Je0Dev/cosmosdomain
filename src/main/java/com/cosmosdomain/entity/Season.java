@@ -5,6 +5,11 @@ import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * JPA entity for the {@code seasons} table.
+ *
+ * <p>Belongs to a {@link TVSeries} and owns its {@link Episode} rows.</p>
+ */
 @Entity
 @Table(name = "seasons")
 public class Season {
@@ -37,6 +42,7 @@ public class Season {
     @Column(name = "episode_count")
     private Integer episodeCount;
 
+    // Episodes belong to this season and are removed with it.
     @OneToMany(mappedBy = "season", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<Episode> episodes = new HashSet<>();
 
